@@ -1,6 +1,6 @@
 //DEPENDENCIES
 const inquirer = require("inquirer")
-const mysql = require("mysql")
+const mysql = require("mysql2")
 const cTable = require('console.table');
 
 //Connecting to database
@@ -43,7 +43,7 @@ function startPrompts() {
             break;
     
           case "View All Employees by Role":
-              viewAllRoles();
+              viewAllByRole();
             break;
 
           case "View All Employees By Department":
@@ -70,23 +70,33 @@ function startPrompts() {
     })
 }
 
-//viewAllEmps
+//function to view all employees
 function viewAllEmployees() {
     db.query("SELECT employee.first_name, employee.last_name, role.title, role.salary, department.name, CONCAT(e.first_name, ' ' ,e.last_name) AS Manager FROM employee INNER JOIN role on role.id = employee.role_id INNER JOIN department on department.id = role.department_id left join employee e on employee.manager_id = e.id;", 
     function(err, res) {
       if (err) throw err
       console.table(res)
-      startPrompt()
+      startPrompts()
   })
 }
 
-//viewAllDepts
+//function to view all emps by roles
+function viewAllByRole() {
+    db.query("SELECT employee.first_name, employee.last_name, role.title AS Title FROM employee JOIN role ON employee.role_id = role.id;", 
+    function(err, res) {
+    if (err) throw err
+    console.table(res)
+    startPrompts()
+    })
+  }
+
+//function to view all departments
 function viewAllDepartments() {
     db.query("SELECT employee.first_name, employee.last_name, department.name AS Department FROM employee JOIN role ON employee.role_id = role.id JOIN department ON role.department_id = department.id ORDER BY employee.id;", 
     function(err, res) {
       if (err) throw err
       console.table(res)
-      startPrompt()
+      startPrompts()
     })
   }
 
@@ -122,23 +132,23 @@ function addEmployee() {
         {
           name: "firstname",
           type: "input",
-          message: "Enter their first name "
+          message: "Enter first name: "
         },
         {
           name: "lastname",
           type: "input",
-          message: "Enter their last name "
+          message: "Enter last name: "
         },
         {
           name: "role",
           type: "list",
-          message: "What is their role? ",
+          message: "Enter role: ",
           choices: selectRole()
         },
         {
             name: "choice",
             type: "rawlist",
-            message: "Whats their managers name?",
+            message: "Enter manager name:",
             choices: selectManager()
         }
     ]).then(function (val) {
@@ -154,7 +164,7 @@ function addEmployee() {
       }, function(err){
           if (err) throw err
           console.table(val)
-          startPrompt()
+          startPrompts()
       })
 
   })
@@ -198,7 +208,7 @@ function updateEmployee() {
         function(err){
             if (err) throw err
             console.table(val)
-            startPrompt()
+            startPrompts()
         })
   
     });
@@ -231,7 +241,7 @@ function addRole() {
             function(err) {
                 if (err) throw err
                 console.table(res);
-                startPrompt();
+                startPrompts();
             }
         )
 
@@ -258,7 +268,7 @@ function addDepartment() {
             function(err) {
                 if (err) throw err
                 console.table(res);
-                startPrompt();
+                startPrompts();
             }
         )
     })
