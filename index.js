@@ -50,21 +50,21 @@ function startPrompts() {
               viewAllDepartments();
             break;
 
-            case "Update Employee":
-            updateEmployee();
-            break;
+          case "Update Employee":
+          updateEmployee();
+          break;
           
           case "Add Employee":
                 addEmployee();
               break;
       
-            case "Add Role":
-                addRole();
-              break;
-      
-            case "Add Department":
-                addDepartment();
-              break;
+          case "Add Role":
+              addRole();
+            break;
+    
+          case "Add Department":
+              addDepartment();
+            break;
     
             }
     })
@@ -113,7 +113,7 @@ function selectRole() {
   return roleArr;
 }
 
-//function to list out managers for the add employee prompt
+//function to list out possible managers for the add employee prompt
 var managersArr = [];
 function selectManager() {
   db.query("SELECT first_name, last_name FROM employee WHERE manager_id IS NULL", function(err, res) {
@@ -126,7 +126,7 @@ function selectManager() {
   return managersArr;
 }
 
-//function add an employee
+//function to add an employee
 function addEmployee() { 
     inquirer.prompt([
         {
@@ -152,20 +152,15 @@ function addEmployee() {
             choices: selectManager()
         }
     ]).then(function (val) {
+      // console.log(val);
       var roleId = selectRole().indexOf(val.role) + 1
       var managerId = selectManager().indexOf(val.choice) + 1
-      db.query("INSERT INTO employee SET ?", 
-      {
-          first_name: val.firstName,
-          last_name: val.lastName,
-          manager_id: managerId,
-          role_id: roleId
-          
-      }, function(err){
+      db.query("INSERT INTO employee (first_name, last_name, manager_id, role_id) VALUES (?, ?, ?, ?)", [val.firstname, val.lastname, managerId, roleId], function(err){
           if (err) throw err
           console.table(val)
           startPrompts()
       })
+      // console.log(thequery);
 
   })
 }
