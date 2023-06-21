@@ -19,7 +19,6 @@ const db = mysql.createConnection({
 });
 
 //function to prompt the user for actions 
-
 function startPrompts() {
     inquirer.prompt([
     {
@@ -33,7 +32,8 @@ function startPrompts() {
               "Update Employee",
               "Add Employee",
               "Add Role",
-              "Add Department"
+              "Add Department",
+              // "View Employees by Manager"
             ]
     }
 ]).then(function(val) {
@@ -65,6 +65,10 @@ function startPrompts() {
           case "Add Department":
               addDepartment();
             break;
+
+          case "View Employees by Manager":
+            viewEmployeesByManager();
+          break;
     
             }
     })
@@ -72,7 +76,7 @@ function startPrompts() {
 
 //function to view all employees
 function viewAllEmployees() {
-    db.query("SELECT employee.first_name, employee.last_name, role.title, role.salary, department.name, CONCAT(e.first_name, ' ' ,e.last_name) AS Manager FROM employee INNER JOIN role on role.id = employee.role_id INNER JOIN department on department.id = role.department_id left join employee e on employee.manager_id = e.id;", 
+    db.query("SELECT employee.first_name, employee.last_name, role.title, role.salary, department.name, CONCAT(e.first_name, ' ' ,e.last_name) AS Manager FROM employee INNER JOIN role on role.id = employee.role_id INNER JOIN department on department.id = role.department_id LEFT JOIN employee e on employee.manager_id = e.id;", 
     function(err, res) {
       if (err) throw err
       console.table(res)
@@ -282,12 +286,12 @@ function addDepartment() {
 //function to update employee managers
 
 //function to View Employees by manager
-const viewEmployeesByManager = () => {
-  const query = 'SELECT * FROM employee ORDER BY manager_id DESC';
-  connection.query(query, (err, res) => {
-      if (err) throw err;
-      console.table(res);
-  })
+// const viewEmployeesByManager = () => {
+//   const query = 'SELECT * FROM employee ORDER BY manager_id DESC';
+//   db.query(query, (err, res) => {
+//       if (err) throw err;
+//       console.table(res);
+//   })
 
-  startPrompts();
-}
+//   startPrompts();
+// }
