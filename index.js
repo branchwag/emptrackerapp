@@ -28,8 +28,8 @@ function startPrompts() {
     name: "choice",
     choices: [
               "View All Employees", 
-              "View All Employees by Role",
-              "View All Employees By Department", 
+              "View All Roles",
+              "View All Departments", 
               "Update Employee",
               "Add Employee",
               "Add Role",
@@ -42,11 +42,11 @@ function startPrompts() {
               viewAllEmployees();
             break;
     
-          case "View All Employees by Role":
-              viewAllByRole();
+          case "View All Roles":
+              viewAllRoles();
             break;
 
-          case "View All Employees By Department":
+          case "View All Departments":
               viewAllDepartments();
             break;
 
@@ -81,8 +81,8 @@ function viewAllEmployees() {
 }
 
 //function to view all emps by roles
-function viewAllByRole() {
-    db.query("SELECT employee.first_name, employee.last_name, role.title AS Title FROM employee JOIN role ON employee.role_id = role.id;", 
+function viewAllRoles() {
+    db.query("SELECT DISTINCT role.title AS Roles FROM employee JOIN role ON employee.role_id = role.id;", 
     function(err, res) {
     if (err) throw err
     console.table(res)
@@ -92,7 +92,7 @@ function viewAllByRole() {
 
 //function to view all departments
 function viewAllDepartments() {
-    db.query("SELECT employee.first_name, employee.last_name, department.name AS Department FROM employee JOIN role ON employee.role_id = role.id JOIN department ON role.department_id = department.id ORDER BY employee.id;", 
+    db.query("SELECT name AS Departments FROM department;", 
     function(err, res) {
       if (err) throw err
       console.table(res)
@@ -278,4 +278,16 @@ function addDepartment() {
     })
   }
 
-  
+
+//function to update employee managers
+
+//function to View Employees by manager
+const viewEmployeesByManager = () => {
+  const query = 'SELECT * FROM employee ORDER BY manager_id DESC';
+  connection.query(query, (err, res) => {
+      if (err) throw err;
+      console.table(res);
+  })
+
+  startPrompts();
+}
