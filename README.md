@@ -14,6 +14,9 @@ You can use the sample data provided by running the schema and seeds via mysql.
 Run 'node index.js' to start the command-line interface.
 Ctrl + C should exit you out of a prompt if needed. 
 
+Functionality overview video:
+https://drive.google.com/file/d/1ufdp7cCu9hXCPnd4IJLLIEWyEgGguRJD/view
+
 ![screenshot of the employee tracker app in action](emptrackerscreenshot.png)
 
 ## Credits
